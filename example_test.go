@@ -10,6 +10,9 @@ import (
 func ExampleEpub_AddSection() {
 	e := epub.NewEpub("My title")
 
+	coverCSSPath, _ := e.AddCSS("testdata/cover.css", "")
+	e.SetNavigationCSS(coverCSSPath)
+
 	// Add a section. The CSS path is optional
 	section1Body := `    <h1>Section 1</h1>
 	<p>This is a paragraph.</p>`

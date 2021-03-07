@@ -423,6 +423,11 @@ func (e *Epub) Title() string {
 	return e.title
 }
 
+// SetNavigationCSS sets the css of the EPUB navigation
+func (e *Epub) SetNavigationCSS(path string) {
+	e.nav.setCSS(path)
+}
+
 // Add a media file to the EPUB and return the path relative to the EPUB section
 // files
 func addMedia(source string, internalFilename string, mediaFileFormat string, mediaFolderName string, mediaMap map[string]string) (string, error) {

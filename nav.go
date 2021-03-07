@@ -32,7 +32,8 @@ type nav struct {
 	// Spec: http://www.idpf.org/epub/301/spec/epub-contentdocs.html#sec-xhtml-nav
 	navXML *navBody
 
-	title string // EPUB title
+	title   string // EPUB title
+	cssPath string
 }
 
 type navBody struct {
@@ -97,11 +98,16 @@ func (t *nav) addSection(index int, title string, relativePath string, isNavigat
 			Data:  title,
 		},
 	}
+
 	t.navXML.Links = append(t.navXML.Links, *l)
 }
 
 func (t *nav) setTitle(title string) {
 	t.title = title
+}
+
+func (t *nav) setCSS(path string) {
+	t.cssPath = path
 }
 
 // Write the Navigation files
@@ -123,6 +129,9 @@ func (t *nav) writeNavDoc(tempDir string) {
 	n := newXhtml(string(navBodyContent))
 	n.setXmlnsEpub(navXmlnsEpub)
 	n.setTitle(t.title)
+	if t.cssPath != "" {
+		n.setCSS(t.cssPath)
+	}
 
 	navFilePath := filepath.Join(tempDir, contentFolderName, xhtmlFolderName, navFilename)
 	n.write(navFilePath)

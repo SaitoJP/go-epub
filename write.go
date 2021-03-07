@@ -420,6 +420,7 @@ func (e *Epub) writeSections(tempDir string) {
 			e.pkg.addToSpine(e.cover.xhtmlFilename)
 		}
 
+		// Set html navigation file
 		e.pkg.addToSpine(navFilename)
 		e.pkg.addToManifest(navFilename, filepath.Join(xhtmlFolderName, navFilename), mediaTypeXhtml, "")
 
@@ -433,7 +434,7 @@ func (e *Epub) writeSections(tempDir string) {
 			section.xhtml.write(sectionFilePath)
 
 			if section.xhtml.Title() != "" && section.filename != e.cover.xhtmlFilename && section.filename != navFilename {
-				// Add html navigation
+				// Add section to navigation
 				e.nav.addSection(i, section.xhtml.Title(), section.filename, section.isNavigationPage)
 			}
 
