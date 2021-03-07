@@ -15,7 +15,7 @@ const (
       </ol>
     </nav>
 `
-	navFilename       = "目次.xhtml"
+	navFilename       = "navigation.xhtml"
 	navItemID         = "nav"
 	navItemProperties = "nav"
 	navEpubType       = "toc"
