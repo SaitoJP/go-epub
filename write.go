@@ -420,11 +420,8 @@ func (e *Epub) writeSections(tempDir string) {
 			e.pkg.addToSpine(e.cover.xhtmlFilename)
 		}
 
-		// TODO: Navigationフラグ判定処理追加予定
-		// setNavigationSectionの数値（目次ページ追加位置）に合わせてManifestへ追加
-		navFileName := "目次.xhtml"
-		e.pkg.addToSpine(navFileName)
-		e.pkg.addToManifest(navFileName, filepath.Join(xhtmlFolderName, navFileName), mediaTypeXhtml, "")
+		e.pkg.addToSpine(navFilename)
+		e.pkg.addToManifest(navFilename, filepath.Join(xhtmlFolderName, navFilename), mediaTypeXhtml, "")
 
 		for i, section := range e.sections {
 			// Set the title of the cover page XHTML to the title of the EPUB
@@ -435,7 +432,7 @@ func (e *Epub) writeSections(tempDir string) {
 			sectionFilePath := filepath.Join(tempDir, contentFolderName, xhtmlFolderName, section.filename)
 			section.xhtml.write(sectionFilePath)
 
-			if section.xhtml.Title() != "" && section.filename != e.cover.xhtmlFilename {
+			if section.xhtml.Title() != "" && section.filename != e.cover.xhtmlFilename && section.filename != navFilename {
 				// Add html navigation
 				e.nav.addSection(i, section.xhtml.Title(), section.filename, section.isNavigationPage)
 			}
