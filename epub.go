@@ -118,6 +118,8 @@ type Epub struct {
 	title    string
 	// Table of contents
 	toc *toc
+	// Html navigation
+	nav *nav
 }
 
 type epubCover struct {
@@ -128,8 +130,9 @@ type epubCover struct {
 }
 
 type epubSection struct {
-	filename string
-	xhtml    *xhtml
+	isNavigationPage bool
+	filename         string
+	xhtml            *xhtml
 }
 
 // NewEpub returns a new Epub.
@@ -146,6 +149,7 @@ func NewEpub(title string) *Epub {
 	e.images = make(map[string]string)
 	e.pkg = newPackage()
 	e.toc = newToc()
+	e.nav = newNav()
 	// Set minimal required attributes
 	e.SetIdentifier(urnUUIDPrefix + uuid.Must(uuid.NewV4()).String())
 	e.SetLang(defaultEpubLang)
@@ -219,6 +223,17 @@ func (e *Epub) AddImage(source string, imageFilename string) (string, error) {
 // The internal path to an already-added CSS file (as returned by AddCSS) to be
 // used for the section is optional.
 func (e *Epub) AddSection(body string, sectionTitle string, internalFilename string, internalCSSPath string) (string, error) {
+	internalFilename, err := e.addSection(body, sectionTitle, internalFilename, internalCSSPath, false)
+	return internalFilename, err
+}
+
+// 目次ページ表記用
+func (e *Epub) AddNavigationSection(body string, sectionTitle string, internalFilename string, internalCSSPath string) (string, error) {
+	internalFilename, err := e.addSection(body, sectionTitle, internalFilename, internalCSSPath, true)
+	return internalFilename, err
+}
+
+func (e *Epub) addSection(body string, sectionTitle string, internalFilename string, internalCSSPath string, isNavigationPage bool) (string, error) {
 	// Generate a filename if one isn't provided
 	if internalFilename == "" {
 		internalFilename = fmt.Sprintf(sectionFileFormat, len(e.sections)+1)
@@ -241,9 +256,11 @@ func (e *Epub) AddSection(body string, sectionTitle string, internalFilename str
 		filename: internalFilename,
 		xhtml:    x,
 	}
+	s.isNavigationPage = isNavigationPage
 	e.sections = append(e.sections, s)
 
 	return internalFilename, nil
+
 }
 
 // Author returns the author of the EPUB.

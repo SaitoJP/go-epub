@@ -109,6 +109,8 @@ func (e *Epub) Write(destFilePath string) error {
 	// createEpubFolders()
 	e.writeSections(tempDir)
 
+	e.writeNav(tempDir)
+
 	// Must be called after:
 	// createEpubFolders()
 	// writeSections()
@@ -418,6 +420,12 @@ func (e *Epub) writeSections(tempDir string) {
 			e.pkg.addToSpine(e.cover.xhtmlFilename)
 		}
 
+		// TODO: Navigationフラグ判定処理追加予定
+		// setNavigationSectionの数値（目次ページ追加位置）に合わせてManifestへ追加
+		navFileName := "目次.xhtml"
+		e.pkg.addToSpine(navFileName)
+		e.pkg.addToManifest(navFileName, filepath.Join(xhtmlFolderName, navFileName), mediaTypeXhtml, "")
+
 		for i, section := range e.sections {
 			// Set the title of the cover page XHTML to the title of the EPUB
 			if section.filename == e.cover.xhtmlFilename {
@@ -427,15 +435,22 @@ func (e *Epub) writeSections(tempDir string) {
 			sectionFilePath := filepath.Join(tempDir, contentFolderName, xhtmlFolderName, section.filename)
 			section.xhtml.write(sectionFilePath)
 
+			if section.xhtml.Title() != "" && section.filename != e.cover.xhtmlFilename {
+				// Add html navigation
+				e.nav.addSection(i, section.xhtml.Title(), section.filename, section.isNavigationPage)
+			}
+
 			relativePath := filepath.Join(xhtmlFolderName, section.filename)
 			// Don't add pages without titles or the cover to the TOC
 			if section.xhtml.Title() != "" && section.filename != e.cover.xhtmlFilename {
+				// Add logic navigation
 				e.toc.addSection(i, section.xhtml.Title(), relativePath)
 			}
 			// The cover page should have already been added to the spine first
 			if section.filename != e.cover.xhtmlFilename {
 				e.pkg.addToSpine(section.filename)
 			}
+
 			e.pkg.addToManifest(section.filename, relativePath, mediaTypeXhtml, "")
 		}
 	}
@@ -448,4 +463,12 @@ func (e *Epub) writeToc(tempDir string) {
 	e.pkg.addToManifest(tocNcxItemID, tocNcxFilename, mediaTypeNcx, "")
 
 	e.toc.write(tempDir)
+}
+
+// Write the Navigation file to the temporary directory and add the Navigation entries to the
+// package file
+func (e *Epub) writeNav(tempDir string) {
+	// e.pkg.addToManifest(navItemID, navFilename, mediaTypeXhtml, navItemProperties)
+
+	e.nav.write(tempDir)
 }
