@@ -39,7 +39,7 @@ const (
 // metadata about the EPUB (title, author, etc) as well as a list of files the
 // EPUB contains.
 //
-// Sample: https://github.com/bmaupin/epub-samples/blob/master/minimal-v3plus2/EPUB/package.opf
+// Sample: https://github.com/SaitoJP/epub-samples/blob/master/minimal-v3plus2/EPUB/package.opf
 // Spec: http://www.idpf.org/epub/301/spec/epub-publications.html
 type pkg struct {
 	xml          *pkgRoot
@@ -107,10 +107,10 @@ type pkgMetadata struct {
 	// Ex: <dc:title>Your title here</dc:title>
 	Title string `xml:"dc:title"`
 	// Ex: <dc:language>en</dc:language>
-	Language string `xml:"dc:language"`
+	Language    string `xml:"dc:language"`
 	Description string `xml:"dc:description,omitempty"`
-	Creator  *pkgCreator
-	Meta     []pkgMeta `xml:"meta"`
+	Creator     *pkgCreator
+	Meta        []pkgMeta `xml:"meta"`
 }
 
 // The <spine> element

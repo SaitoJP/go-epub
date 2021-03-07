@@ -28,7 +28,7 @@ type nav struct {
 	// This holds the body XML for the EPUB v3 TOC file (nav.xhtml). Since this is
 	// an XHTML file, the rest of the structure is handled by the xhtml type
 	//
-	// Sample: https://github.com/bmaupin/epub-samples/blob/master/minimal-v3plus2/EPUB/nav.xhtml
+	// Sample: https://github.com/SaitoJP/epub-samples/blob/master/minimal-v3plus2/EPUB/nav.xhtml
 	// Spec: http://www.idpf.org/epub/301/spec/epub-contentdocs.html#sec-xhtml-nav
 	navXML *navBody
 
